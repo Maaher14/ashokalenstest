@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{session.csrf}}" />
+    <title>Ashoka Lens</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script type="module" src="/static/app.js"></script>
+  </head>
+  <body data-user="{{user|tojson|forceescape}}">
+    <aside class="sidebar">
+      <a class="brand" href="/feed"
+        ><span class="lens-mark">◉</span
+        ><span
+          >ashoka<span class="brand-light">lens</span
+          ><small>A CAMPUS PERSPECTIVE</small></span
+        ></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="/feed" data-nav="feed"><span>▦</span> Campus feed</a
+        ><a href="/people" data-nav="people"><span>◎</span> People</a
+        ><a href="/groups" data-nav="groups"><span>▧</span> Your circles</a
+        ><a href="/drafts" data-nav="drafts"><span>▤</span> Drafts</a
+        ><a href="/profile/{{user.id}}" data-nav="profile"
+          ><span>◯</span> Your profile</a
+        >
+      </nav>
+      <button class="primary create-button">
+        <span>＋</span> Create a post
+      </button>
+      <div class="sidebar-bottom">
+        <div class="campus-label">
+          <span class="live-dot"></span> ASHOKA COMMUNITY
+        </div>
+        <div class="account">
+          <span class="avatar">{{user.name[:1]}}</span>
+          <div><strong>{{user.name}}</strong><small>Campus member</small></div>
+          <button
+            class="icon-button"
+            id="logout"
+            title="Sign out"
+            aria-label="Sign out"
+          >
+            ↗
+          </button>
+        </div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <span id="breadcrumb">Your campus, in focus</span
+        ><span class="private-label">◈ &nbsp; Campus members only</span>
+      </header>
+      <main id="main" tabindex="-1">
+        <div class="loading">Loading your campus…</div>
+      </main>
+      <footer class="site-footer">
+        <span>ASHOKA LENS</span
+        ><span>Photos, sounds and the moments between.</span>
+      </footer>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+    <dialog id="confirm-dialog">
+      <h2 id="confirm-title">Delete this post?</h2>
+      <p id="confirm-text">
+        This removes the post and its media. This cannot be undone.
+      </p>
+      <div class="actions">
+        <button id="confirm-no" class="secondary">Cancel</button
+        ><button id="confirm-yes" class="danger">Delete</button>
+      </div>
+    </dialog>
+    <dialog id="player-dialog">
+      <button class="close-player icon-button" aria-label="Close player">
+        ✕
+      </button>
+      <div id="player-content"></div>
+    </dialog>
+  </body>
+</html>

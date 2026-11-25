@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{session.csrf}}" />
+    <title>Welcome · Ashoka Lens</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body class="login-page">
+    <main class="login-layout">
+      <section class="login-story">
+        <a class="brand" href="/login"
+          ><span class="lens-mark">◉</span
+          ><span>ashoka<span class="brand-light">lens</span></span></a
+        >
+        <div>
+          <span class="eyebrow">THE EVERYDAY. WORTH KEEPING.</span>
+          <h1>A campus full<br />of perspectives.</h1>
+          <p>
+            Share the sights, sounds and small moments<br />that make Ashoka
+            yours.
+          </p>
+        </div>
+        <div class="login-art" aria-hidden="true">
+          <div class="art-frame">
+            <div class="arch"></div>
+            <div class="art-caption">
+              A different lens on the everyday <span>↗</span>
+            </div>
+          </div>
+          <div class="sound-tag">▂ ▅ ▃ ▇ ▄ ▂ ▆ &nbsp; MORE THAN A PICTURE</div>
+        </div>
+        <small class="login-foot">A SPACE FOR THE ASHOKA COMMUNITY</small>
+      </section>
+      <section class="login-form">
+        <span class="eyebrow">WELCOME TO ASHOKA LENS</span>
+        <h2>Your campus.<br />Your point of view.</h2>
+        <p>
+          Sign in with your university Google account<br />to see what’s
+          happening around you.
+        </p>
+        <div id="google-signin"></div>
+        <p id="login-status" role="status" aria-live="polite"></p>
+        <div class="login-note">
+          <span>◈</span>
+          <p>
+            Made for campus.<br /><small
+              >Access is limited to verified @ashoka.edu.in accounts.</small
+            >
+          </p>
+        </div>
+        {% if demo %}
+        <div class="demo-box">
+          <strong>Local demonstration</strong>
+          <p>Sample accounts and illustrated sample posts.</p>
+          <button data-demo="maya@ashoka.edu.in" class="secondary">
+            Continue as Maya</button
+          ><button data-demo="arjun@ashoka.edu.in" class="secondary">
+            Continue as Arjun</button
+          ><button data-demo="tara@ashoka.edu.in" class="secondary">
+            Continue as Tara
+          </button>
+        </div>
+        {% endif %}
+      </section>
+    </main>
+    <script>
+      const statusNode=document.getElementById('login-status');
+      async function signIn(endpoint,data){try{statusNode.textContent='Verifying your account…';const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':document.querySelector('meta[name="csrf-token"]').content},body:JSON.stringify(data)});const out=await r.json();if(!r.ok)throw Error(out.error);location.href='/feed';}catch(e){statusNode.textContent=e.message;}}
+      function initialiseGoogle(){google.accounts.id.initialize({client_id:{{client_id|tojson}},nonce:{{session.nonce|tojson}},callback:r=>signIn('/auth/google',{credential:r.credential}),auto_select:false});google.accounts.id.renderButton(document.getElementById('google-signin'),{theme:'outline',size:'large',width:300});}
+      document.querySelectorAll('[data-demo]').forEach(b=>b.onclick=()=>signIn('/auth/demo',{email:b.dataset.demo}));
+    </script>
+    <script
+      src="https://accounts.google.com/gsi/client"
+      async
+      onload="initialiseGoogle()"
+      onerror="
+        statusNode.textContent =
+          'Google sign-in could not load. Check your connection and refresh.'
+      "
+    ></script>
+  </body>
+</html>
